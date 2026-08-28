@@ -1,0 +1,1 @@
+g++ source/main.cpp include/imgloader/stb_image.cpp include/glad/glad.c -lglfw -Ofast -w -o build/voidlands -Iinclude -Isource
