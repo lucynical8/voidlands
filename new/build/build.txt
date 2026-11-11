@@ -1,0 +1,1 @@
+g++ source/main.cpp include/imgl/simage.cpp include/glad/glad.c -lglfw -O3 -w -o build/voidlands -Iinclude -Isource
