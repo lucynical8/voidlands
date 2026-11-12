@@ -14,7 +14,7 @@ jobs:
           - os: ubuntu-latest
             executable: build/voidlands
           - os: windows-latest
-            executable: build/voidlands.exe
+            executable: build/Release/voidlands.exe
           - os: macos-latest
             executable: build/voidlands
 
