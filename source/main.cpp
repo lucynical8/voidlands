@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <config.hpp>
 #include <wrapps.hpp>
 #include <textrx.hpp>
