@@ -44,9 +44,15 @@ jobs:
       - name: build
         run: cmake --build build --config Release
 
-      - name: upload executable
+      - name: prepare download
+        run: |
+          cmake -E make_directory package/build
+          cmake -E copy "${{matrix.executable}}" package/build/
+          cmake -E copy_directory resources package/resources
+
+      - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
+          path: package/
           name: voidlands-${{matrix.os}}
-          path: ${{matrix.executable}}
           if-no-files-found: error
