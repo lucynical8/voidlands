@@ -43,8 +43,7 @@ void updmaintext() {
     }
     string sfps = "fps: " + to_string(cfps);
     string srendist = "\nrender distance: " + to_string(chunksys.rendist);
-    string instructs = (string)"\ni/o - +/- fps by 10" +
-                       (string)"\nk/l - +/- rend by 1" +
+    string instructs = (string)"\nk/l - +/- rend by 1" +
                        (string)"\nx - toggle debug - " + onoff(debug) +
                        (string)"\nc - toggle cursor - " + onoff(cursor) +
                        (string)"\nv - toggle collision - " + onoff(collis) +
@@ -52,8 +51,6 @@ void updmaintext() {
     string sblock = "\nselected block: " + blocknames[player.selecblock - 1];
     maintext = sfps + srendist + instructs + sblock;
 }
-
-float fps = 150.0f;
 
 int main() {
     initglfw();
@@ -73,6 +70,7 @@ int main() {
     crossx.crself();
     blocksys.loadtexs();
     blocksys.crmeshes();
+    glfwSwapInterval(1);
     player.camera.speed = 5.0f;
     chunksys.rendist = 7;
     chunksys.start();
@@ -88,11 +86,6 @@ int main() {
         textrx.render(maintext, vec4{1.0f}, 3.0f, 20.0f, 20.0f);
         crossx.drawself();
         swapbuff(window);
-        float elapsed = gettime() - lframe;
-        float sleeptime = 1.0f / fps - elapsed;
-        if (sleeptime > 0.0f) {
-            this_thread::sleep_for(chrono::duration<float>(sleeptime));
-        }
     }
     chunksys.stop();
     textrx.delself();
@@ -150,14 +143,8 @@ void keycb(GLFWwindow *window, int key, int scn, int act, int mod) {
     if (key == GLFW_KEY_V && act == GLFW_PRESS) {
         collis = !collis;
     }
-    if (key == GLFW_KEY_I && act == GLFW_PRESS) {
-        fps += 10.0f;
-    }
-    if (key == GLFW_KEY_O && act == GLFW_PRESS) {
-        if (fps - 10.0f >= 10.0f) fps -= 10.0f;
-    }
     if (key == GLFW_KEY_K && act == GLFW_PRESS) {
-        if (chunksys.rendist < 21) chunksys.rendist++;
+        if (chunksys.rendist < 20) chunksys.rendist++;
     }
     if (key == GLFW_KEY_L && act == GLFW_PRESS) {
         if (chunksys.rendist > 1) chunksys.rendist--;
