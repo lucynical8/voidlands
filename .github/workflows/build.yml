@@ -1,0 +1,52 @@
+name: cross-platform build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            executable: build/voidlands
+          - os: windows-latest
+            executable: build/voidlands.exe
+          - os: macos-latest
+            executable: build/voidlands
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install linux dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libglm-dev
+
+      - name: install macos dependencies
+        if: runner.os == 'macOS'
+        run: brew install glfw glm
+
+      - name: install windows dependencies
+        if: runner.os == 'Windows'
+        run: vcpkg install glfw3:x64-windows-static glm:x64-windows-static
+
+      - name: configure linux and macos
+        if: runner.os != 'Windows'
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: configure windows
+        if: runner.os == 'Windows'
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static
+
+      - name: build
+        run: cmake --build build --config Release
+
+      - name: upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: voidlands-${{matrix.os}}
+          path: ${{matrix.executable}}
+          if-no-files-found: error
