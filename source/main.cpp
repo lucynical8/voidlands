@@ -27,6 +27,7 @@ Chunksys chunksys;
 bool debug = false;
 bool cursor = false;
 bool collis = false;
+bool gravity = false;
 
 string onoff(bool b) {
     if (b) return "on";
@@ -49,6 +50,7 @@ void updmaintext() {
                        (string)"\nx - toggle debug - " + onoff(debug) +
                        (string)"\nc - toggle cursor - " + onoff(cursor) +
                        (string)"\nv - toggle collision - " + onoff(collis) +
+                       (string)"\ng - toggle gravity - " + onoff(gravity) +
                        (string)"\n1 to 7 - change blocks";
     string sblock = "\nselected block: " + blocknames[player.selecblock - 1];
     maintext = sfps + srendist + instructs + sblock;
@@ -110,18 +112,15 @@ void prinput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         dirs.push_back(Rt);
     }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+    if (!gravity && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         dirs.push_back(Up);
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+    if (!gravity && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         dirs.push_back(Dn);
     }
     player.camera.prkeybr(dirs);
-    if (collis) {
-        sweptx.resolblocks(player.camera.pos, player.camera.vel, player.hitboxmin, player.hitboxmax, chunksys);
-    } else {
-        player.camera.pos += player.camera.vel;
-    }
+    bool jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+    player.prmove(sweptx, chunksys, gravity, collis, jump, dtime);
     player.camera.updfrust();
 }
 
@@ -143,7 +142,14 @@ void keycb(GLFWwindow *window, int key, int scn, int act, int mod) {
         else disabcur(window);
     }
     if (key == GLFW_KEY_V && act == GLFW_PRESS) {
+        player.onground = false;
         collis = !collis;
+    }
+    if (key == GLFW_KEY_G && act == GLFW_PRESS) {
+        gravity = !gravity;
+        player.vervel = 0.0f;
+        player.onground = false;
+        player.horvel = vec3{0.0f};
     }
     if (key == GLFW_KEY_K && act == GLFW_PRESS) {
         if (chunksys.rendist < 20) chunksys.rendist++;

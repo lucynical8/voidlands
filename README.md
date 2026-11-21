@@ -1,6 +1,6 @@
 # voidlands
 
-voidlands is a work-in-progress voxel game built with c++ and opengl
+its a work-in-progress voxel game built in c++ and opengl
 
 ## screenshots
 
@@ -11,9 +11,9 @@ voidlands is a work-in-progress voxel game built with c++ and opengl
 
 ## download
 
-download a build from the [releases page](https://github.com/lucynical8/voidlands/releases), extract the archive and run the executable from inside its `build` directory so it can find the resources
+download a build from the [releases page](https://github.com/lucynical8/voidlands/releases), extract the archive and run the executable from inside its `build` directory
 
-on linux you may need to make the executable runnable first:
+on linux you may need to make the executable, well, executable first:
 
 ```bash
 cd build
